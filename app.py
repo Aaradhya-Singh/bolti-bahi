@@ -26,7 +26,10 @@ if SARVAM_API_KEY:
         print(f"Warning: could not initialize SarvamAI: {e}")
 
 # Database Setup
-DB_PATH = os.path.join(os.path.dirname(__file__), "bolti_bahi.db")
+if os.environ.get("VERCEL"):
+    DB_PATH = "/tmp/bolti_bahi.db"
+else:
+    DB_PATH = os.path.join(os.path.dirname(__file__), "bolti_bahi.db")
 
 def init_db():
     conn = sqlite3.connect(DB_PATH)
@@ -67,6 +70,7 @@ app.add_middleware(
 )
 
 def get_db_connection():
+    init_db()
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
